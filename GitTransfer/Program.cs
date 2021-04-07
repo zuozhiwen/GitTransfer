@@ -48,18 +48,19 @@ namespace GitTransfer
             var startupInfo = new ProcessStartInfo
             {
                 FileName = "git.exe",
-                Arguments = $"--no-pager log --since {sinceDate} --name-only --no-merges",
+                Arguments = $"--no-pager log --since {sinceDate} --name-only --format=\"\" --no-merges",
                 UseShellExecute = false,
-                WindowStyle = ProcessWindowStyle.Hidden,
+                //WindowStyle = ProcessWindowStyle.Hidden,
                 WorkingDirectory = src.FullName,
-                RedirectStandardOutput = true
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
             };
 
             var process = Process.Start(startupInfo);
             string output = process.StandardOutput.ReadToEnd();
             if (output.Any())
             {
-                var affectedFiles = output.Split('\n').Where(o => o.StartsWith(src.Name)).Select(o => o).Distinct().ToList();
+                var affectedFiles = output.Split('\n').Where(o => o?.Any() == true).Select(o => o).Distinct().ToList();
                 foreach (var item in affectedFiles)
                 {
                     var srcFileName = new FileInfo(Path.Combine(src.FullName, item));
@@ -71,6 +72,7 @@ namespace GitTransfer
 
                     var dstFileName = new FileInfo(Path.Combine(dst.FullName, item));
                     srcFileName.CopyTo(dstFileName.FullName, true);
+                    Console.WriteLine($"{item} COPY!");
                 }
             }
         }
