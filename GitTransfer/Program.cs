@@ -15,6 +15,7 @@ namespace GitTransfer
             if (args?.Any() != true || args.Length == 1 && (args[0] == "/?" || args[0] == "--help"))
             {
                 Console.WriteLine("gitTransfer --since \"(2021/4/1 | 2021/4/1 12:00)\" SrcSourceCodePath DstSourceCodePath");
+                return;
             }
 
 
