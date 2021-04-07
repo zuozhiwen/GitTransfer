@@ -71,6 +71,12 @@ namespace GitTransfer
                     }
 
                     var dstFileName = new FileInfo(Path.Combine(dst.FullName, item));
+                    if(!dstFileName.Directory.Exists)
+                    {
+                        dstFileName.Directory.Create();
+                    }
+
+
                     srcFileName.CopyTo(dstFileName.FullName, true);
                     Console.WriteLine($"{item} COPY!");
                 }
