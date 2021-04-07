@@ -30,8 +30,20 @@ namespace GitTransfer
             var sinceDate = argsList[sinceIndex + 1];
             argsList.RemoveRange(sinceIndex, 2);
 
+            if (argsList.Count < 2)
+            {
+                Console.WriteLine("Arguments Invalid");
+                return;
+            }
+
             var src = new DirectoryInfo(argsList[0]);
             var dst = new DirectoryInfo(argsList[1]);
+
+            if (!src.Exists || !dst.Exists)
+            {
+                Console.WriteLine("Directory not Exist!");
+                return;
+            }
 
             var startupInfo = new ProcessStartInfo
             {
@@ -51,6 +63,12 @@ namespace GitTransfer
                 foreach (var item in affectedFiles)
                 {
                     var srcFileName = new FileInfo(Path.Combine(src.FullName, item));
+                    if (!srcFileName.Exists)
+                    {
+                        Console.WriteLine($"File Not Exist : {srcFileName.FullName} SKIPPED!");
+                        continue;
+                    }
+
                     var dstFileName = new FileInfo(Path.Combine(dst.FullName, item));
                     srcFileName.CopyTo(dstFileName.FullName, true);
                 }
